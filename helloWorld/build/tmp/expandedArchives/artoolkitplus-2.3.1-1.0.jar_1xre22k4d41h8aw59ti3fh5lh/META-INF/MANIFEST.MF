@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Implementation-Title: JavaCPP Presets for ARToolKitPlus
+Implementation-Version: 2.3.1-1.0
+Archiver-Version: Plexus Archiver
+Built-By: saudet
+Specification-Vendor: Bytedeco
+Specification-Title: JavaCPP Presets for ARToolKitPlus
+Class-Path: ./ javacpp.jar artoolkitplus-linux-arm.jar artoolkitplus-l
+ inux-x86.jar artoolkitplus-linux-x86_64.jar artoolkitplus-macosx-x86.
+ jar artoolkitplus-macosx-x86_64.jar artoolkitplus-windows-x86.jar art
+ oolkitplus-windows-x86_64.jar javacpp-1.0.jar
+Implementation-Vendor: Bytedeco
+Name: org/bytedeco/javacpp/presets/
+Created-By: Apache Maven 3.2.2
+Build-Jdk: 1.8.0_45
+Specification-Version: 2.3.1-1.0
+

@@ -1,0 +1,202 @@
+package org.hipi.examples;
+
+import org.hipi.image.FloatImage;
+import org.hipi.image.HipiImageHeader;
+import org.hipi.imagebundle.mapreduce.HibInputFormat;
+
+import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+import org.hipi.image.io.ImageEncoder;
+//import hipi.image.io.JPEGImageUtil;
+
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import java.awt.EventQueue;
+import java.awt.GridBagLayout;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
+import java.awt.image.ColorConvertOp;
+import java.awt.image.WritableRaster;
+import java.io.File;
+import javax.imageio.ImageIO;
+public class HelloWorld extends Configured implements Tool {
+  
+  public static class HelloWorldMapper extends Mapper<HipiImageHeader, FloatImage, IntWritable, FloatImage> {
+       public static BufferedImage toGrayScale(BufferedImage master) {
+        BufferedImage gray = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
+
+        // Automatic converstion....
+        ColorConvertOp op = new ColorConvertOp(ColorSpace.getInstance(ColorSpace.CS_GRAY), null);
+        op.filter(master, gray);
+
+        return gray;
+    }
+
+    public static BufferedImage toSepia(BufferedImage img, int sepiaIntensity) {
+
+        BufferedImage sepia = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
+        // Play around with this.  20 works well and was recommended
+        //   by another developer. 0 produces black/white image
+        int sepiaDepth = 20;
+
+        int w = img.getWidth();
+        int h = img.getHeight();
+
+        WritableRaster raster = sepia.getRaster();
+
+        // We need 3 integers (for R,G,B color values) per pixel.
+        int[] pixels = new int[w * h * 3];
+        img.getRaster().getPixels(0, 0, w, h, pixels);
+
+        //  Process 3 ints at a time for each pixel.  Each pixel has 3 RGB
+        //    colors in array
+        for (int i = 0; i < pixels.length; i += 3) {
+            int r = pixels[i];
+            int g = pixels[i + 1];
+            int b = pixels[i + 2];
+
+            int gry = (r + g + b) / 3;
+            r = g = b = gry;
+            r = r + (sepiaDepth * 2);
+            g = g + sepiaDepth;
+
+            if (r > 255) {
+                r = 255;
+            }
+            if (g > 255) {
+                g = 255;
+            }
+            if (b > 255) {
+                b = 255;
+            }
+
+            // Darken blue color to increase sepia effect
+            b -= sepiaIntensity;
+
+            // normalize if out of bounds
+            if (b < 0) {
+                b = 0;
+            }
+            if (b > 255) {
+                b = 255;
+            }
+
+            pixels[i] = r;
+            pixels[i + 1] = g;
+            pixels[i + 2] = b;
+        }
+        raster.setPixels(0, 0, w, h, pixels);
+
+        return sepia;
+    } 
+    public void map(HipiImageHeader key, FloatImage value, Context context) 
+        throws IOException, InterruptedException {
+
+      // Verify that image was properly decoded, is of sufficient size, and has three color channels (RGB)
+      if (value != null && value.getWidth() > 1 && value.getHeight() > 1 && value.getNumBands() == 3) {
+
+        // Get dimensions of image
+        int w = value.getWidth();
+        int h = value.getHeight();
+	int sepiaDepth = 20;
+	int sepiaIntensity = 80;
+        // Get pointer to image data
+        float[] pixels = value.getData();
+	int[] pixels_new = new int [w*h*3];
+        // Initialize 3 element array to hold RGB pixel average
+        int[] avgData = {0,0,0};
+	BufferedImage master = ImageIO.read(new File("./1.jpg"));	
+	
+	BufferedImage sepia = toSepia(master, 80);
+	File outputfile = new File("./1_sepia.jpg");
+        ImageIO.write(sepia, "jpeg", outputfile);
+
+        FloatImage avg = new FloatImage(w, h, 3,pixels );
+        context.write(new IntWritable(1), avg);
+
+      } // If (value != null...
+      
+    } // map()
+
+  } // HelloWorldMapper
+  
+ public static class HelloWorldReducer extends Reducer<IntWritable, FloatImage, IntWritable, Text> {
+
+    public void reduce(IntWritable key, Iterable<FloatImage> values, Context context)
+        throws IOException, InterruptedException {
+
+      // Create FloatImage object to hold final result
+      FloatImage avg = new FloatImage(1, 1, 3);
+
+      // Initialize a counter and iterate over IntWritable/FloatImage records from mapper
+      int total = 0;
+	int w=0;
+	int h=0;
+      for (FloatImage val : values) {
+
+        context.write(key, new Text("succes"));
+	 w = val.getWidth();
+         h = val.getHeight();
+	break;
+      }
+	
+		
+
+
+    } // reduce()
+
+  } // HelloWorldReducer
+  
+  public int run(String[] args) throws Exception {
+    // Check input arguments
+    if (args.length != 2) {
+      System.out.println("Usage: helloWorld <input HIB> <output directory>");
+      System.exit(0);
+    }
+   
+
+	 // Initialize and configure MapReduce job
+    Job job = Job.getInstance();
+    // Set input format class which parses the input HIB and spawns map tasks
+    job.setInputFormatClass(HibInputFormat.class);
+    // Set the driver, mapper, and reducer classes which express the computation
+    job.setJarByClass(HelloWorld.class);
+    job.setMapperClass(HelloWorldMapper.class);
+    job.setReducerClass(HelloWorldReducer.class);
+    // Set the types for the key/value pairs passed to/from map and reduce layers
+    job.setMapOutputKeyClass(IntWritable.class);
+    job.setMapOutputValueClass(FloatImage.class);
+    job.setOutputKeyClass(IntWritable.class);
+    job.setOutputValueClass(Text.class); 
+	
+    // Set the input and output paths on the HDFS
+    FileInputFormat.setInputPaths(job, new Path(args[0]));
+    FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+    // Execute the MapReduce job and block until it complets
+    boolean success = job.waitForCompletion(true);
+    
+    // Return success or failure
+    return success ? 0 : 1;
+  }
+  
+  public static void main(String[] args) throws Exception {
+    ToolRunner.run(new HelloWorld(), args);
+    System.exit(0);
+  }
+  
+}

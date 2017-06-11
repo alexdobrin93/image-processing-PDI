@@ -1,0 +1,39 @@
+Manifest-Version: 1.0
+Implementation-Title: JavaCV
+Implementation-Version: 1.0
+Archiver-Version: Plexus Archiver
+Built-By: saudet
+Specification-Vendor: Bytedeco
+Specification-Title: JavaCV
+Class-Path: ./ javacpp.jar opencv.jar ffmpeg.jar flycapture.jar libdc1
+ 394.jar libfreenect.jar videoinput.jar artoolkitplus.jar javacpp-1.0.
+ jar opencv-3.0.0-1.0.jar ffmpeg-2.7.1-1.0.jar flycapture-2.7.3.19-1.0
+ .jar libdc1394-2.2.3-1.0.jar libfreenect-0.5.2-1.0.jar videoinput-0.2
+ 00-1.0.jar artoolkitplus-2.3.1-1.0.jar flandmark-1.07-1.0.jar android
+ -2.2.1.jar gluegen-rt-main-2.0.2.jar gluegen-rt-2.0.2.jar gluegen-rt-
+ 2.0.2-natives-android-armv6.jar gluegen-rt-2.0.2-natives-linux-amd64.
+ jar gluegen-rt-2.0.2-natives-linux-armv6.jar gluegen-rt-2.0.2-natives
+ -linux-armv6hf.jar gluegen-rt-2.0.2-natives-linux-i586.jar gluegen-rt
+ -2.0.2-natives-macosx-universal.jar gluegen-rt-2.0.2-natives-solaris-
+ amd64.jar gluegen-rt-2.0.2-natives-solaris-i586.jar gluegen-rt-2.0.2-
+ natives-windows-amd64.jar gluegen-rt-2.0.2-natives-windows-i586.jar j
+ ogl-all-main-2.0.2.jar jogl-all-2.0.2.jar jogl-all-2.0.2-natives-andr
+ oid-armv6.jar jogl-all-2.0.2-natives-linux-amd64.jar jogl-all-2.0.2-n
+ atives-linux-armv6.jar jogl-all-2.0.2-natives-linux-armv6hf.jar jogl-
+ all-2.0.2-natives-linux-i586.jar jogl-all-2.0.2-natives-macosx-univer
+ sal.jar jogl-all-2.0.2-natives-solaris-amd64.jar jogl-all-2.0.2-nativ
+ es-solaris-i586.jar jogl-all-2.0.2-natives-windows-amd64.jar jogl-all
+ -2.0.2-natives-windows-i586.jar jocl-main-2.0.2.jar jocl-2.0.2.jar jo
+ cl-2.0.2-natives-android-armv6.jar jocl-2.0.2-natives-linux-amd64.jar
+  jocl-2.0.2-natives-linux-armv6.jar jocl-2.0.2-natives-linux-armv6hf.
+ jar jocl-2.0.2-natives-linux-i586.jar jocl-2.0.2-natives-macosx-unive
+ rsal.jar jocl-2.0.2-natives-solaris-amd64.jar jocl-2.0.2-natives-sola
+ ris-i586.jar jocl-2.0.2-natives-windows-amd64.jar jocl-2.0.2-natives-
+ windows-i586.jar junit-4.11.jar hamcrest-core-1.3.jar
+Main-Class: org.bytedeco.javacv.JavaCV
+Implementation-Vendor: Bytedeco
+Name: org/bytedeco/javacv/
+Created-By: Apache Maven 3.2.2
+Build-Jdk: 1.8.0_45
+Specification-Version: 1.0
+

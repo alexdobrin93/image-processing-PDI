@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Implementation-Title: JavaCPP Presets for flandmark
+Implementation-Version: 1.07-1.0
+Archiver-Version: Plexus Archiver
+Built-By: saudet
+Specification-Vendor: Bytedeco
+Specification-Title: JavaCPP Presets for flandmark
+Class-Path: ./ javacpp.jar flandmark-linux-arm.jar flandmark-linux-x86
+ .jar flandmark-linux-x86_64.jar flandmark-macosx-x86.jar flandmark-ma
+ cosx-x86_64.jar flandmark-windows-x86.jar flandmark-windows-x86_64.ja
+ r opencv-3.0.0-1.0.jar javacpp-1.0.jar
+Implementation-Vendor: Bytedeco
+Name: org/bytedeco/javacpp/presets/
+Created-By: Apache Maven 3.2.2
+Build-Jdk: 1.8.0_45
+Specification-Version: 1.07-1.0
+
